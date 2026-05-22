@@ -17,7 +17,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const timeout = setTimeout(() => setLoading(false), 8000)
     supabase.auth.getSession().then(({ data }) => {
+      clearTimeout(timeout)
       setUser(data.session?.user ?? null)
       setLoading(false)
     })
