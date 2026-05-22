@@ -154,6 +154,68 @@ export interface Database {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          description: string | null
+          status: 'planning' | 'active' | 'completed' | 'on-hold'
+          color: string
+          due_date: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          description?: string | null
+          status?: 'planning' | 'active' | 'completed' | 'on-hold'
+          color?: string
+          due_date?: string | null
+          created_at?: string
+        }
+        Update: {
+          name?: string
+          description?: string | null
+          status?: 'planning' | 'active' | 'completed' | 'on-hold'
+          color?: string
+          due_date?: string | null
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          id: string
+          project_id: string
+          user_id: string
+          title: string
+          description: string | null
+          status: 'todo' | 'in-progress' | 'review' | 'done'
+          priority: 'low' | 'medium' | 'high'
+          due_date: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          project_id: string
+          user_id: string
+          title: string
+          description?: string | null
+          status?: 'todo' | 'in-progress' | 'review' | 'done'
+          priority?: 'low' | 'medium' | 'high'
+          due_date?: string | null
+          created_at?: string
+        }
+        Update: {
+          title?: string
+          description?: string | null
+          status?: 'todo' | 'in-progress' | 'review' | 'done'
+          priority?: 'low' | 'medium' | 'high'
+          due_date?: string | null
+        }
+        Relationships: []
+      }
       invoice_items: {
         Row: {
           id: string
@@ -193,3 +255,5 @@ export type Category = Database['public']['Tables']['categories']['Row']
 export type Transaction = Database['public']['Tables']['transactions']['Row']
 export type Invoice = Database['public']['Tables']['invoices']['Row']
 export type InvoiceItem = Database['public']['Tables']['invoice_items']['Row']
+export type Project = Database['public']['Tables']['projects']['Row']
+export type Task = Database['public']['Tables']['tasks']['Row']

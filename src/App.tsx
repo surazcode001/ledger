@@ -10,6 +10,8 @@ import Invoices from './pages/Invoices'
 import Reports from './pages/Reports'
 import Accounts from './pages/Accounts'
 import Categories from './pages/Categories'
+import Projects from './pages/projects/Projects'
+import ProjectDetail from './pages/projects/ProjectDetail'
 
 export default function App() {
   return (
@@ -32,6 +34,8 @@ export default function App() {
             <Route path="reports" element={<Reports />} />
             <Route path="accounts" element={<Accounts />} />
             <Route path="categories" element={<Categories />} />
+            <Route path="projects" element={<Projects />} />
+            <Route path="projects/:id" element={<ProjectDetail />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

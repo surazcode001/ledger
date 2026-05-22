@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, ArrowLeftRight, Receipt, CreditCard,
-  BarChart2, Wallet, Tag, LogOut, Menu, X
+  BarChart2, Wallet, Tag, LogOut, Menu, X, FolderKanban
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
@@ -26,6 +26,12 @@ const nav = [
     items: [
       { to: '/invoices', label: 'Invoices', icon: Receipt },
       { to: '/reports', label: 'Reports', icon: BarChart2 },
+    ],
+  },
+  {
+    section: 'Projects',
+    items: [
+      { to: '/projects', label: 'Projects', icon: FolderKanban },
     ],
   },
   {
