@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './components/Layout'
 import Auth from './pages/Auth'
+import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import Transactions from './pages/Transactions'
 import Expenses from './pages/Expenses'
@@ -21,13 +22,17 @@ export default function App() {
           <Route path="/auth" element={<Auth />} />
           <Route
             path="/"
+            element={<ProtectedRoute><Home /></ProtectedRoute>}
+          />
+          <Route
+            path="/"
             element={
               <ProtectedRoute>
                 <Layout />
               </ProtectedRoute>
             }
           >
-            <Route index element={<Dashboard />} />
+            <Route path="ledger" element={<Dashboard />} />
             <Route path="transactions" element={<Transactions />} />
             <Route path="expenses" element={<Expenses />} />
             <Route path="invoices" element={<Invoices />} />

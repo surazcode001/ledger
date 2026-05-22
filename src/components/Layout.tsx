@@ -1,7 +1,7 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, ArrowLeftRight, Receipt, CreditCard,
-  BarChart2, Wallet, Tag, LogOut, Menu, X, FolderKanban
+  BarChart2, Wallet, Tag, LogOut, Menu, X, FolderKanban, Home
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
@@ -10,7 +10,7 @@ const nav = [
   {
     section: 'Overview',
     items: [
-      { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+      { to: '/ledger', label: 'Dashboard', icon: LayoutDashboard },
     ],
   },
   {
@@ -64,7 +64,12 @@ export default function Layout() {
         ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="p-5 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-indigo-600">Ledger</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-lg font-bold text-indigo-600">Workspace</h1>
+            <Link to="/" className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700" title="Home">
+              <Home size={15} />
+            </Link>
+          </div>
           <p className="text-xs text-gray-400 mt-0.5 truncate">{user?.email}</p>
         </div>
 
@@ -107,7 +112,7 @@ export default function Layout() {
           <button onClick={() => setOpen(true)} className="p-1 rounded text-gray-600 hover:bg-gray-100">
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <h1 className="text-base font-bold text-indigo-600">Ledger</h1>
+          <h1 className="text-base font-bold text-indigo-600">Workspace</h1>
         </header>
 
         <main className="flex-1 overflow-y-auto p-6">
