@@ -12,8 +12,8 @@ const CARDS = [
     path: '/ledger',
   },
   {
-    title: 'Projects',
-    description: 'Manage projects and tasks with a kanban board and priority flags.',
+    title: 'InnovatioTrakko',
+    description: 'Scrum board with sprints, epics, and tickets — like Jira for your projects.',
     icon: FolderKanban,
     from: 'from-violet-500',
     to: 'to-violet-700',

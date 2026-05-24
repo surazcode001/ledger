@@ -162,6 +162,7 @@ export interface Database {
           description: string | null
           status: 'planning' | 'active' | 'completed' | 'on-hold'
           color: string
+          key: string | null
           due_date: string | null
           created_at: string
         }
@@ -172,6 +173,7 @@ export interface Database {
           description?: string | null
           status?: 'planning' | 'active' | 'completed' | 'on-hold'
           color?: string
+          key?: string | null
           due_date?: string | null
           created_at?: string
         }
@@ -180,7 +182,108 @@ export interface Database {
           description?: string | null
           status?: 'planning' | 'active' | 'completed' | 'on-hold'
           color?: string
+          key?: string | null
           due_date?: string | null
+        }
+        Relationships: []
+      }
+      sprints: {
+        Row: {
+          id: string
+          project_id: string
+          user_id: string
+          name: string
+          goal: string | null
+          status: 'planning' | 'active' | 'completed'
+          start_date: string | null
+          end_date: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          project_id: string
+          user_id: string
+          name: string
+          goal?: string | null
+          status?: 'planning' | 'active' | 'completed'
+          start_date?: string | null
+          end_date?: string | null
+          created_at?: string
+        }
+        Update: {
+          name?: string
+          goal?: string | null
+          status?: 'planning' | 'active' | 'completed'
+          start_date?: string | null
+          end_date?: string | null
+        }
+        Relationships: []
+      }
+      epics: {
+        Row: {
+          id: string
+          project_id: string
+          user_id: string
+          name: string
+          color: string
+          status: 'open' | 'in-progress' | 'done'
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          project_id: string
+          user_id: string
+          name: string
+          color?: string
+          status?: 'open' | 'in-progress' | 'done'
+          created_at?: string
+        }
+        Update: {
+          name?: string
+          color?: string
+          status?: 'open' | 'in-progress' | 'done'
+        }
+        Relationships: []
+      }
+      tickets: {
+        Row: {
+          id: string
+          project_id: string
+          sprint_id: string | null
+          epic_id: string | null
+          user_id: string
+          ticket_number: number
+          title: string
+          description: string | null
+          type: 'story' | 'bug' | 'task'
+          status: 'backlog' | 'todo' | 'in-progress' | 'in-review' | 'done'
+          priority: 'lowest' | 'low' | 'medium' | 'high' | 'highest'
+          story_points: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          project_id: string
+          sprint_id?: string | null
+          epic_id?: string | null
+          user_id: string
+          title: string
+          description?: string | null
+          type?: 'story' | 'bug' | 'task'
+          status?: 'backlog' | 'todo' | 'in-progress' | 'in-review' | 'done'
+          priority?: 'lowest' | 'low' | 'medium' | 'high' | 'highest'
+          story_points?: number | null
+          created_at?: string
+        }
+        Update: {
+          sprint_id?: string | null
+          epic_id?: string | null
+          title?: string
+          description?: string | null
+          type?: 'story' | 'bug' | 'task'
+          status?: 'backlog' | 'todo' | 'in-progress' | 'in-review' | 'done'
+          priority?: 'lowest' | 'low' | 'medium' | 'high' | 'highest'
+          story_points?: number | null
         }
         Relationships: []
       }
@@ -257,3 +360,6 @@ export type Invoice = Database['public']['Tables']['invoices']['Row']
 export type InvoiceItem = Database['public']['Tables']['invoice_items']['Row']
 export type Project = Database['public']['Tables']['projects']['Row']
 export type Task = Database['public']['Tables']['tasks']['Row']
+export type Sprint = Database['public']['Tables']['sprints']['Row']
+export type Epic = Database['public']['Tables']['epics']['Row']
+export type Ticket = Database['public']['Tables']['tickets']['Row']

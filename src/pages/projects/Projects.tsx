@@ -1,18 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Calendar, X, FolderKanban, CheckSquare, Play, Archive } from 'lucide-react'
+import { Plus, Calendar, X } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import type { Project } from '../../types/database'
 
 type ProjectStatus = 'planning' | 'active' | 'completed' | 'on-hold'
-
-interface ProjectStats {
-  total: number
-  active: number
-  completed: number
-  totalTasks: number
-}
 
 const STATUS_COLORS: Record<ProjectStatus, string> = {
   planning: 'bg-gray-100 text-gray-700',
@@ -23,13 +16,12 @@ const STATUS_COLORS: Record<ProjectStatus, string> = {
 
 const COLORS = ['#6366f1', '#ec4899', '#f97316', '#10b981', '#3b82f6', '#8b5cf6', '#ef4444', '#14b8a6']
 
-const DEFAULT_FORM = { name: '', description: '', status: 'planning' as ProjectStatus, color: '#6366f1', due_date: '' }
+const DEFAULT_FORM = { name: '', key: '', description: '', status: 'planning' as ProjectStatus, color: '#6366f1', due_date: '' }
 
 export default function Projects() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [projects, setProjects] = useState<Project[]>([])
-  const [stats, setStats] = useState<ProjectStats>({ total: 0, active: 0, completed: 0, totalTasks: 0 })
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [form, setForm] = useState(DEFAULT_FORM)
@@ -37,18 +29,12 @@ export default function Projects() {
 
   const fetchProjects = async () => {
     if (!user) return
-    const [{ data: projectData }, { count: taskCount }] = await Promise.all([
-      supabase.from('projects').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-      supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
-    ])
-    const list = projectData ?? []
-    setProjects(list)
-    setStats({
-      total: list.length,
-      active: list.filter(p => p.status === 'active').length,
-      completed: list.filter(p => p.status === 'completed').length,
-      totalTasks: taskCount ?? 0,
-    })
+    const { data } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+    setProjects(data ?? [])
     setLoading(false)
   }
 
@@ -61,6 +47,7 @@ export default function Projects() {
     await supabase.from('projects').insert({
       user_id: user.id,
       name: form.name,
+      key: form.key.toUpperCase() || null,
       description: form.description || null,
       status: form.status,
       color: form.color,
@@ -80,41 +67,19 @@ export default function Projects() {
     </div>
   )
 
-  const statCards = [
-    { label: 'Total Projects', value: stats.total, icon: FolderKanban, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { label: 'Active', value: stats.active, icon: Play, color: 'text-green-600', bg: 'bg-green-50' },
-    { label: 'Completed', value: stats.completed, icon: Archive, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Total Tasks', value: stats.totalTasks, icon: CheckSquare, color: 'text-violet-600', bg: 'bg-violet-50' },
-  ]
-
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+          <h1 className="text-2xl font-bold text-gray-900">All Projects</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{projects.length} project{projects.length !== 1 ? 's' : ''}</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700"
+          className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white text-sm font-medium rounded-lg hover:bg-violet-700"
         >
           <Plus size={16} /> New Project
         </button>
-      </div>
-
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {statCards.map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="bg-white rounded-xl border border-gray-200 p-5">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-xs text-gray-500">{label}</p>
-              <div className={`p-1.5 rounded-lg ${bg}`}><Icon size={14} className={color} /></div>
-            </div>
-            {loading
-              ? <div className="h-6 bg-gray-100 rounded animate-pulse w-1/2" />
-              : <p className="text-2xl font-bold text-gray-900">{value}</p>
-            }
-          </div>
-        ))}
       </div>
 
       {projects.length === 0 ? (
@@ -165,15 +130,19 @@ export default function Projects() {
               </button>
             </div>
             <form onSubmit={handleCreate} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input
-                  required
-                  value={form.name}
-                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Project name"
-                />
+              <div className="grid grid-cols-3 gap-3">
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    placeholder="Project name" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Key</label>
+                  <input required maxLength={6} value={form.key} onChange={e => setForm(f => ({ ...f, key: e.target.value.toUpperCase() }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-violet-500 uppercase"
+                    placeholder="PROJ" />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
@@ -234,7 +203,7 @@ export default function Projects() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                  className="px-4 py-2 text-sm font-medium bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:opacity-50"
                 >
                   {saving ? 'Creating…' : 'Create Project'}
                 </button>

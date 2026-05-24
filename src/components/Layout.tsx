@@ -1,7 +1,7 @@
 import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, ArrowLeftRight, Receipt, CreditCard,
-  BarChart2, Wallet, Tag, LogOut, Menu, X, FolderKanban, Home
+  BarChart2, Wallet, Tag, LogOut, Menu, X, Home
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
@@ -26,12 +26,6 @@ const nav = [
     items: [
       { to: '/invoices', label: 'Invoices', icon: Receipt },
       { to: '/reports', label: 'Reports', icon: BarChart2 },
-    ],
-  },
-  {
-    section: 'Projects',
-    items: [
-      { to: '/projects', label: 'Projects', icon: FolderKanban },
     ],
   },
   {
@@ -65,8 +59,8 @@ export default function Layout() {
       `}>
         <div className="p-5 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h1 className="text-lg font-bold text-indigo-600">Workspace</h1>
-            <Link to="/" className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700" title="Home">
+            <h1 className="text-lg font-bold text-indigo-600">Ledger</h1>
+            <Link to="/" className="p-1 rounded hover:bg-indigo-50 text-gray-400 hover:text-indigo-600" title="Home">
               <Home size={15} />
             </Link>
           </div>
@@ -81,7 +75,6 @@ export default function Layout() {
                 <NavLink
                   key={to}
                   to={to}
-                  end={to === '/'}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
@@ -112,7 +105,7 @@ export default function Layout() {
           <button onClick={() => setOpen(true)} className="p-1 rounded text-gray-600 hover:bg-gray-100">
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <h1 className="text-base font-bold text-indigo-600">Workspace</h1>
+          <h1 className="text-base font-bold text-indigo-600">Ledger</h1>
         </header>
 
         <main className="flex-1 overflow-y-auto p-6">
