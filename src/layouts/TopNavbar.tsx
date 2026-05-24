@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import { Search, Bell, Sun, Moon, Plus, ChevronRight, Command } from 'lucide-react'
 import { useUIStore } from '../store/uiStore'
 import { useBoardStore } from '../store/boardStore'

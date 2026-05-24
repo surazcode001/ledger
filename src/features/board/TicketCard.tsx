@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { MessageSquare, Paperclip, Calendar, ChevronsUp, ChevronUp, Minus, ChevronDown, ChevronsDown, Bookmark, Bug, CheckSquare } from 'lucide-react'
+import { MessageSquare, Paperclip, ChevronsUp, ChevronUp, Minus, ChevronDown, ChevronsDown, Bookmark, Bug, CheckSquare } from 'lucide-react'
 import type { Ticket, Epic } from '../../types/database'
 
 type TicketType = 'story' | 'bug' | 'task'
@@ -93,12 +93,6 @@ export default function TicketCard({ ticket, projectKey, epic, onClick }: Props)
             <span className="flex items-center gap-1 text-[10px]">
               <Paperclip size={10} /> 0
             </span>
-            {ticket.due_date && (
-              <span className="flex items-center gap-1 text-[10px]">
-                <Calendar size={10} />
-                {new Date(ticket.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-              </span>
-            )}
           </div>
           <div className="flex items-center gap-1.5">
             {ticket.story_points != null && (

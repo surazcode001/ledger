@@ -22,7 +22,7 @@ interface BoardState {
   createEpic: (data: Omit<Epic, 'id' | 'created_at'>) => Promise<void>
 }
 
-export const useBoardStore = create<BoardState>((set, get) => ({
+export const useBoardStore = create<BoardState>((set) => ({
   project: null,
   tickets: [],
   sprints: [],
@@ -59,7 +59,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   updateTicket: async (ticketId, data) => {
     set(s => ({ tickets: s.tickets.map(t => t.id === ticketId ? { ...t, ...data } : t) }))
-    await supabase.from('tickets').update(data).eq('id', ticketId)
+    await supabase.from('tickets').update(data as any).eq('id', ticketId)
   },
 
   deleteTicket: async (ticketId) => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Plus, Play, X, Archive, ChevronsUp, ChevronUp, Minus, ChevronDown, ChevronsDown, Bookmark, Bug, CheckSquare } from 'lucide-react'
+import { Plus, Play, X, ChevronsUp, ChevronUp, Minus, ChevronDown, ChevronsDown, Bookmark, Bug, CheckSquare } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useBoardStore } from '../../store/boardStore'
 import { useAuth } from '../../context/AuthContext'
@@ -29,7 +29,7 @@ const EPIC_COLORS = ['#7C3AED','#8B5CF6','#EC4899','#F97316','#10B981','#3B82F6'
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuth()
-  const { fetchBoard, project, tickets, sprints, epics, moveTicket, assignSprint, deleteTicket, startSprint, completeSprint, createSprint, createEpic } = useBoardStore()
+  const { fetchBoard, project, tickets, sprints, epics, assignSprint, deleteTicket, startSprint, createSprint, createEpic } = useBoardStore()
 const [tab, setTab] = useState<Tab>('board')
   const [sprintModal, setSprintModal] = useState(false)
   const [epicModal, setEpicModal] = useState(false)

@@ -25,7 +25,7 @@ const NAV = [
 ]
 
 export default function Sidebar() {
-  const { sidebarCollapsed, toggleSidebar, darkMode } = useUIStore()
+  const { sidebarCollapsed, toggleSidebar } = useUIStore()
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
 

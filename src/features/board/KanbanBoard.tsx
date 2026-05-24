@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import {
-  DndContext, DragEndEvent, DragOverEvent, DragStartEvent,
-  DragOverlay, PointerSensor, useSensor, useSensors, closestCorners
+  DndContext, DragOverlay, PointerSensor, useSensor, useSensors, closestCorners
 } from '@dnd-kit/core'
-import { arrayMove } from '@dnd-kit/sortable'
-import { Play, CheckCircle, Plus, X, Filter } from 'lucide-react'
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
+import { CheckCircle, X, Filter } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useBoardStore } from '../../store/boardStore'
 import { useUIStore } from '../../store/uiStore'

@@ -1,19 +1,10 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts'
-import { TrendingUp, CheckCircle2, Clock, AlertCircle, FolderOpen, ArrowRight } from 'lucide-react'
-import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../context/AuthContext'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
+import { TrendingUp, CheckCircle2, Clock, FolderOpen, ArrowRight } from 'lucide-react'
 import { useBoardStore } from '../../store/boardStore'
 
-const COLORS = ['#7C3AED', '#3B82F6', '#F59E0B', '#10B981']
-const TYPE_COLORS = { story: '#10B981', bug: '#EF4444', task: '#3B82F6' }
-
 export default function Dashboard() {
-  const navigate = useNavigate()
-  const { user } = useAuth()
-  const { tickets, sprints, epics, project } = useBoardStore()
+  const { tickets, sprints, project } = useBoardStore()
 
   const activeSprint = sprints.find(s => s.status === 'active')
   const sprintTickets = activeSprint ? tickets.filter(t => t.sprint_id === activeSprint.id) : []
@@ -29,14 +20,6 @@ export default function Dashboard() {
     { name: 'Stories', value: tickets.filter(t => t.type === 'story').length, fill: '#10B981' },
     { name: 'Bugs',    value: tickets.filter(t => t.type === 'bug').length,   fill: '#EF4444' },
     { name: 'Tasks',   value: tickets.filter(t => t.type === 'task').length,  fill: '#3B82F6' },
-  ]
-
-  const priorityData = [
-    { name: 'Highest', value: tickets.filter(t => t.priority === 'highest').length },
-    { name: 'High',    value: tickets.filter(t => t.priority === 'high').length },
-    { name: 'Medium',  value: tickets.filter(t => t.priority === 'medium').length },
-    { name: 'Low',     value: tickets.filter(t => t.priority === 'low').length },
-    { name: 'Lowest',  value: tickets.filter(t => t.priority === 'lowest').length },
   ]
 
   const recentTickets = [...tickets].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5)

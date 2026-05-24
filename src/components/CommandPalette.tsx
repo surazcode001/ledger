@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, FolderKanban, Hash, ArrowRight, Command, X } from 'lucide-react'
+import { Search, FolderKanban, Hash, ArrowRight } from 'lucide-react'
 import { useUIStore } from '../store/uiStore'
 import { useBoardStore } from '../store/boardStore'
 

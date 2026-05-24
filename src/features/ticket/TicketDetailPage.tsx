@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, Bookmark, Bug, CheckSquare, ChevronsUp, ChevronUp, Minus, ChevronDown,
-  ChevronsDown, Calendar, Tag, Layers, Link2, MessageSquare, Activity, Clock, Edit3
+  ChevronsDown, Link2, MessageSquare, Activity, Clock, Edit3
 } from 'lucide-react'
 import { useBoardStore } from '../../store/boardStore'
 import { useUIStore } from '../../store/uiStore'
-import type { Ticket } from '../../types/database'
 
 type TicketStatus = 'backlog' | 'todo' | 'in-progress' | 'in-review' | 'done'
 type Priority = 'lowest' | 'low' | 'medium' | 'high' | 'highest'
@@ -43,9 +41,6 @@ export default function TicketDetailPage() {
   const titleRef = useRef<HTMLInputElement>(null)
 
   const ticket = tickets.find(t => t.id === activeTicketId)
-  const sprint = ticket?.sprint_id ? sprints.find(s => s.id === ticket.sprint_id) : null
-  const epic = ticket?.epic_id ? epics.find(e => e.id === ticket.epic_id) : null
-  const activeSprint = sprints.find(s => s.status === 'active')
 
   useEffect(() => {
     if (ticket) setTitle(ticket.title)
@@ -65,7 +60,6 @@ export default function TicketDetailPage() {
   if (!ticket || !activeTicketId) return null
 
   const tc = TYPE_CFG[ticket.type as keyof typeof TYPE_CFG]
-  const pc = PRI_CFG[ticket.priority as Priority]
   const sc = STATUS_CFG[ticket.status as TicketStatus]
   const ticketKey = `${project?.key ?? 'TK'}-${ticket.ticket_number}`
 
