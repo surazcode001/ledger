@@ -2,12 +2,13 @@ import { Search, Bell, Sun, Moon, Plus, ChevronRight, Command } from 'lucide-rea
 import { useUIStore } from '../store/uiStore'
 import { useBoardStore } from '../store/boardStore'
 
+
 interface TopNavbarProps {
   breadcrumbs?: { label: string; to?: string }[]
 }
 
 export default function TopNavbar({ breadcrumbs }: TopNavbarProps) {
-  const { darkMode, toggleDarkMode, setCommandPaletteOpen } = useUIStore()
+  const { darkMode, toggleDarkMode, setCommandPaletteOpen, openCreateIssue } = useUIStore()
   const { project } = useBoardStore()
 
   const crumbs = breadcrumbs ?? [
@@ -44,7 +45,7 @@ export default function TopNavbar({ breadcrumbs }: TopNavbarProps) {
       {/* Actions */}
       <div className="flex items-center gap-1">
         <button
-          onClick={() => setCommandPaletteOpen(true)}
+          onClick={() => openCreateIssue()}
           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-xs font-medium transition-colors"
         >
           <Plus size={13} /> Create

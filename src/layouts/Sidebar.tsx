@@ -1,9 +1,8 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  LayoutDashboard, FolderKanban, BarChart2, Settings,
-  ChevronLeft, ChevronRight, LogOut, Bell, Home,
-  Zap, Users, Calendar, GitBranch
+  LayoutDashboard, FolderKanban,
+  ChevronLeft, ChevronRight, LogOut, Bell, Home, Zap
 } from 'lucide-react'
 import { useUIStore } from '../store/uiStore'
 import { useAuth } from '../context/AuthContext'
@@ -12,15 +11,6 @@ const NAV = [
   { section: 'Main', items: [
     { to: '/projects', label: 'Dashboard', icon: LayoutDashboard, end: true },
     { to: '/projects/board', label: 'Projects', icon: FolderKanban },
-  ]},
-  { section: 'Views', items: [
-    { to: '/projects/roadmap', label: 'Roadmap', icon: GitBranch },
-    { to: '/projects/calendar', label: 'Calendar', icon: Calendar },
-    { to: '/projects/teams', label: 'Teams', icon: Users },
-    { to: '/projects/reports', label: 'Reports', icon: BarChart2 },
-  ]},
-  { section: 'Settings', items: [
-    { to: '/projects/settings', label: 'Settings', icon: Settings },
   ]},
 ]
 

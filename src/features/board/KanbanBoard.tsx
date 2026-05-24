@@ -3,11 +3,10 @@ import {
   DndContext, DragOverlay, PointerSensor, useSensor, useSensors, closestCorners
 } from '@dnd-kit/core'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
-import { CheckCircle, X, Filter } from 'lucide-react'
+import { CheckCircle, Filter } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useBoardStore } from '../../store/boardStore'
 import { useUIStore } from '../../store/uiStore'
-import { useAuth } from '../../context/AuthContext'
 import KanbanColumn from './KanbanColumn'
 import TicketCard from './TicketCard'
 import type { Ticket } from '../../types/database'
@@ -15,22 +14,10 @@ import type { Ticket } from '../../types/database'
 type TicketStatus = 'todo' | 'in-progress' | 'in-review' | 'done'
 const BOARD_STATUSES: TicketStatus[] = ['todo', 'in-progress', 'in-review', 'done']
 
-interface CreateForm {
-  open: boolean
-  status: TicketStatus
-  title: string
-  type: 'story' | 'bug' | 'task'
-  priority: 'lowest' | 'low' | 'medium' | 'high' | 'highest'
-}
-
 export default function KanbanBoard() {
-  const { project, tickets, sprints, epics, moveTicket, createTicket } = useBoardStore()
-  const { setActiveTicketId } = useUIStore()
-  const { user } = useAuth()
+  const { project, tickets, sprints, epics, moveTicket } = useBoardStore()
+  const { setActiveTicketId, openCreateIssue } = useUIStore()
   const [dragging, setDragging] = useState<Ticket | null>(null)
-  const [createForm, setCreateForm] = useState<CreateForm>({
-    open: false, status: 'todo', title: '', type: 'task', priority: 'medium',
-  })
 
   const activeSprint = sprints.find(s => s.status === 'active')
   const epicMap = Object.fromEntries(epics.map(e => [e.id, e]))
@@ -50,8 +37,7 @@ export default function KanbanBoard() {
   }
 
   const handleDragStart = (e: DragStartEvent) => {
-    const ticket = tickets.find(t => t.id === e.active.id)
-    setDragging(ticket ?? null)
+    setDragging(tickets.find(t => t.id === e.active.id) ?? null)
   }
 
   const handleDragEnd = (e: DragEndEvent) => {
@@ -61,26 +47,7 @@ export default function KanbanBoard() {
     const targetStatus = findContainer(over.id as string)
     if (!targetStatus) return
     const ticket = tickets.find(t => t.id === active.id)
-    if (ticket && ticket.status !== targetStatus) {
-      moveTicket(ticket.id, targetStatus)
-    }
-  }
-
-  const handleAddTicket = async (status: TicketStatus) => {
-    if (!createForm.title.trim() || !user || !project) return
-    await createTicket({
-      project_id: project.id,
-      user_id: user.id,
-      title: createForm.title.trim(),
-      type: createForm.type,
-      priority: createForm.priority,
-      sprint_id: activeSprint?.id ?? null,
-      epic_id: null,
-      story_points: null,
-      status,
-      description: null,
-    })
-    setCreateForm(f => ({ ...f, title: '', open: false }))
+    if (ticket && ticket.status !== targetStatus) moveTicket(ticket.id, targetStatus)
   }
 
   return (
@@ -150,7 +117,7 @@ export default function KanbanBoard() {
               tickets={boardTickets.filter(t => t.status === status)}
               projectKey={project?.key ?? 'TK'}
               epicMap={epicMap}
-              onAddTicket={(s) => setCreateForm({ open: true, status: s, title: '', type: 'task', priority: 'medium' })}
+              onAddTicket={(s) => openCreateIssue(s)}
               onTicketClick={(t) => setActiveTicketId(t.id)}
             />
           ))}
@@ -169,57 +136,6 @@ export default function KanbanBoard() {
           )}
         </DragOverlay>
       </DndContext>
-
-      {/* Quick create modal */}
-      {createForm.open && (
-        <div className="fixed inset-0 bg-black/40 flex items-end sm:items-center justify-center z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="bg-white dark:bg-[#1A1A1E] rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700"
-          >
-            <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                Create issue · <span className="text-violet-600 capitalize">{createForm.status.replace('-', ' ')}</span>
-              </h3>
-              <button onClick={() => setCreateForm(f => ({ ...f, open: false }))} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                <X size={16} className="text-gray-400" />
-              </button>
-            </div>
-            <div className="p-4 space-y-3">
-              <input
-                autoFocus
-                value={createForm.title}
-                onChange={e => setCreateForm(f => ({ ...f, title: e.target.value }))}
-                onKeyDown={e => { if (e.key === 'Enter') handleAddTicket(createForm.status); if (e.key === 'Escape') setCreateForm(f => ({ ...f, open: false })) }}
-                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500"
-                placeholder="Issue title..."
-              />
-              <div className="flex gap-2">
-                <select value={createForm.type} onChange={e => setCreateForm(f => ({ ...f, type: e.target.value as any }))}
-                  className="flex-1 px-2 py-1.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-violet-500">
-                  <option value="story">Story</option>
-                  <option value="bug">Bug</option>
-                  <option value="task">Task</option>
-                </select>
-                <select value={createForm.priority} onChange={e => setCreateForm(f => ({ ...f, priority: e.target.value as any }))}
-                  className="flex-1 px-2 py-1.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-violet-500">
-                  <option value="highest">Highest</option>
-                  <option value="high">High</option>
-                  <option value="medium">Medium</option>
-                  <option value="low">Low</option>
-                  <option value="lowest">Lowest</option>
-                </select>
-              </div>
-              <div className="flex justify-end gap-2 pt-1">
-                <button onClick={() => setCreateForm(f => ({ ...f, open: false }))} className="px-3 py-1.5 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">Cancel</button>
-                <button onClick={() => handleAddTicket(createForm.status)} className="px-3 py-1.5 text-xs font-medium bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition-colors">Create Issue</button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
     </div>
   )
 }

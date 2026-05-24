@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from '../layouts/Sidebar'
 import CommandPalette from './CommandPalette'
 import TicketDetailPage from '../features/ticket/TicketDetailPage'
+import CreateIssueModal from '../features/ticket/CreateIssueModal'
 
 export default function ProjectsLayout() {
   return (
@@ -12,6 +13,7 @@ export default function ProjectsLayout() {
       </div>
       <CommandPalette />
       <TicketDetailPage />
+      <CreateIssueModal />
     </div>
   )
 }
